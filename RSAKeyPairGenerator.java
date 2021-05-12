@@ -9,7 +9,7 @@ import java.util.Base64;
 public class RSAKeyPairGenerator  {
     private PrivateKey privateKey;
     private PublicKey publicKey;
-    
+
     public RSAKeyPairGenerator() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(2048);
