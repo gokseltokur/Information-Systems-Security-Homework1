@@ -19,15 +19,16 @@ public class Main {
 
             // Generate an RSA public-private key pair. KA+ and KA-
             RSA rsa = new RSA();
-            System.out.println("Public Key KA(+): \n" + encoder.encodeToString(rsa.getPublicKey().getEncoded()));
-            System.out.println("Private Key KA(-): \n" + encoder.encodeToString(rsa.getPrivateKey().getEncoded()));
+            System.out.println("Public Key KA(+): \n" + encoder.encodeToString(rsa.getPublicKey().getEncoded()) + "\n");
+            System.out
+                    .println("Private Key KA(-): \n" + encoder.encodeToString(rsa.getPrivateKey().getEncoded()) + "\n");
 
             // Question 2
 
             // Generate two symmetric keys: 128 bit K1 and 256 bit K2
             AES aes = new AES();
             System.out.println("128-bit K1 : " + encoder.encodeToString(aes.get128BitKey().getEncoded()));
-            System.out.println("256-bit K2 : " + encoder.encodeToString(aes.get256BitKey().getEncoded()));
+            System.out.println("256-bit K2 : " + encoder.encodeToString(aes.get256BitKey().getEncoded()) + "\n");
 
             // Encypt them with KA+
             byte[] encrypted128BitKey = rsa.encrypt(rsa.getPublicKey(),
@@ -36,24 +37,19 @@ public class Main {
                     .println("Encrypt K1 with public key:\n" + new String(encoder.encodeToString(encrypted128BitKey)));
             byte[] encrypted256BitKey = rsa.encrypt(rsa.getPublicKey(),
                     encoder.encodeToString(aes.get256BitKey().getEncoded()));
-            System.out
-                    .println("Encrypt K2 with public key:\n" + new String(encoder.encodeToString(encrypted256BitKey)));
+            System.out.println(
+                    "Encrypt K2 with public key:\n" + new String(encoder.encodeToString(encrypted256BitKey)) + "\n");
 
             // Decrypt them with KA-
             byte[] key128Bit = rsa.decrypt(encrypted128BitKey);
             System.out.println("Decrypt K1 with private key:\n" + new String(key128Bit));
             byte[] key256Bit = rsa.decrypt(encrypted256BitKey);
-            System.out.println("Decrypt K2 with private key:\n" + new String(key256Bit));
+            System.out.println("Decrypt K2 with private key:\n" + new String(key256Bit) + "\n");
 
             // Question 3
             // !!!!!!!!!!!!! IMPORTANT !!!!!!!!!!!!!!!!!!!!
             // TODO: Change the message
-            String message = "A security is a fungible, negotiable financial "
-                    + "instrument that holds some type of monetary value. It "
-                    + "represents an ownership position in a publicly-traded "
-                    + "corporation (via stock), a creditor relationship with a "
-                    + "governmental body or a corporation (represented by owning "
-                    + "that entity's bond), or rights to ownership as represented " + "by an option";
+            String message = "Information security, sometimes shortened to infosec, is the practice of protecting information by mitigating information risks. It is part of information risk management. It typically involves preventing or reducing the probability of unauthorized/inappropriate access to data, or the unlawful use, disclosure, disruption, deletion, corruption, modification, inspection, recording, or devaluation of information.";
 
             System.out.println("m: " + message);
 
@@ -70,16 +66,16 @@ public class Main {
                 }
                 hexString.append(hex);
             }
-            System.out.println("H(m): " + hexString.toString());
+            System.out.println("H(m): " + hexString.toString() + "\n");
 
             // Then encrypt it with KA− (Thus generate a digital signature.)
             byte[] digitalSignature = rsa.signatureEncrypt(hexString.toString());
-            System.out.println("KA(-)(H(m)): " + new String(encoder.encodeToString(digitalSignature)));
+            System.out.println("KA(-)(H(m)): " + new String(encoder.encodeToString(digitalSignature)) + "\n");
 
             // Then verify the digital signature. (Decrypt it with KA+, apply Hash
             // algorithm to the message, compare)
             byte[] decryptedDigitalSignature = rsa.signatureDecrypt(rsa.getPublicKey(), digitalSignature);
-            System.out.println("KA(+)(KA(-)(H(m))): " + new String(decryptedDigitalSignature));
+            System.out.println("KA(+)(KA(-)(H(m))): " + new String(decryptedDigitalSignature) + "\n");
 
             // Question 4
             byte[] content = getFile();
@@ -123,21 +119,21 @@ public class Main {
 
             // AES (128 bit key) CBC mode Change Initialization Vector (IV) and show that
             // the corresponding ciphertext chages for the same plaintext
-
+            System.out.println();
             System.out.println("Message: " + message);
 
             System.out.println("IV: " + iv);
             IvParameterSpec iv2 = aes.generateIV(16);
 
-            System.out.println("IV2: " + iv2);
+            System.out.println("IV2: " + iv2 + "\n");
 
             byte[] encryptedWithIv = aes.encryptImageFileCBCMode(aes.get128BitKey(), iv, message.getBytes());
             System.out.println("Message decrypted with AES (128 bit key) CBC mode using IV: \n"
-                    + new String(encoder.encodeToString(encryptedWithIv)));
+                    + new String(encoder.encodeToString(encryptedWithIv)) + "\n");
 
             byte[] encryptedWithIv2 = aes.encryptImageFileCBCMode(aes.get128BitKey(), iv2, message.getBytes());
             System.out.println("Message decrypted with AES (128 bit key) CBC mode using IV2: \n"
-                    + new String(encoder.encodeToString(encryptedWithIv2)));
+                    + new String(encoder.encodeToString(encryptedWithIv2)) + "\n");
 
         } catch (Exception e) {
             System.out.println(e);
