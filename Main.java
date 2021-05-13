@@ -1,6 +1,13 @@
 import java.util.Base64;
 import java.security.MessageDigest;
 import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.crypto.spec.IvParameterSpec;
 
 public class Main {
     static Base64.Encoder encoder = Base64.getEncoder();
@@ -74,14 +81,97 @@ public class Main {
             byte[] decryptedDigitalSignature = rsa.signatureDecrypt(rsa.getPublicKey(), digitalSignature);
             System.out.println("KA(+)(KA(-)(H(m))): " + new String(decryptedDigitalSignature));
 
-            if (message.equals(new String(decryptedDigitalSignature))) {
-                System.out.println("VERIFIED");
-            }
+            // Question 4
+            byte[] content = getFile();
+            IvParameterSpec iv = aes.generateIV(16);
+
+            // AES (128 bit key) CBC mode
+            // Encrypt the image file.
+            byte[] encryptedImageWith128BitKeyCBC = aes.encryptImageFileCBCMode(aes.get128BitKey(), iv, content);
+            saveFile(encryptedImageWith128BitKeyCBC, "encryptedWith128BitKeyAESCBC.txt");
+            System.out.println("Image encrypted with AES (128 bit key) CBC mode.");
+
+            // Decrypt the file
+            byte[] decryptedImageWith128BitKeyCBC = aes.decryptImageFileCBCMode(aes.get128BitKey(), iv,
+                    encryptedImageWith128BitKeyCBC);
+            saveFile(decryptedImageWith128BitKeyCBC, "./catDecryptedWith128BitKeyAESCBC.jpg");
+            System.out.println("Image decrypted with AES (128 bit key) CBC mode.");
+
+            // AES (256 bit key) CBC mode
+            // Encrypt the image file.
+            byte[] encryptedImageWith256BitKeyCBC = aes.encryptImageFileCBCMode(aes.get256BitKey(), iv, content);
+            saveFile(encryptedImageWith256BitKeyCBC, "encryptedWith256BitKeyAESCBC.txt");
+            System.out.println("Image encrypted with AES (256 bit key) CBC mode.");
+
+            // Decrypt the file
+            byte[] decryptedImageWith256BitKeyCBC = aes.decryptImageFileCBCMode(aes.get256BitKey(), iv,
+                    encryptedImageWith256BitKeyCBC);
+            saveFile(decryptedImageWith256BitKeyCBC, "./catDecryptedWith256BitKeyAESCBC.jpg");
+            System.out.println("Image decrypted with AES (256 bit key) CBC mode.");
+
+            // AES (256 bit key) CTR mode
+            // Encrypt the image file.
+            byte[] encryptedImageWith256BitKeyCTR = aes.encryptImageFileCTRMode(aes.get256BitKey(), iv, content);
+            saveFile(encryptedImageWith256BitKeyCTR, "encryptedWith256BitKeyAESCTR.txt");
+            System.out.println("Image encrypted with AES (256 bit key) CTR mode.");
+
+            // Decrypt the file
+            byte[] decryptedImageWith256BitKeyCTR = aes.decryptImageFileCTRMode(aes.get256BitKey(), iv,
+                    encryptedImageWith256BitKeyCTR);
+            saveFile(decryptedImageWith256BitKeyCTR, "./catDecryptedWith256BitKeyAESCTR.jpg");
+            System.out.println("Image decrypted with AES (256 bit key) CTR mode.");
+
+            // AES (128 bit key) CBC mode Change Initialization Vector (IV) and show that
+            // the corresponding ciphertext chages for the same plaintext
+
+            System.out.println("Message: " + message);
+
+            System.out.println("IV: " + iv);
+            IvParameterSpec iv2 = aes.generateIV(16);
+
+            System.out.println("IV2: " + iv2);
+
+            byte[] encryptedWithIv = aes.encryptImageFileCBCMode(aes.get128BitKey(), iv, message.getBytes());
+            System.out.println("Message decrypted with AES (128 bit key) CBC mode using IV: \n"
+                    + new String(encoder.encodeToString(encryptedWithIv)));
+
+            byte[] encryptedWithIv2 = aes.encryptImageFileCBCMode(aes.get128BitKey(), iv2, message.getBytes());
+            System.out.println("Message decrypted with AES (128 bit key) CBC mode using IV2: \n"
+                    + new String(encoder.encodeToString(encryptedWithIv2)));
 
         } catch (Exception e) {
             System.out.println(e);
         }
 
+    }
+
+    public static byte[] getFile() {
+        File f = new File("./cat.jpg");
+        InputStream is = null;
+        try {
+            is = new FileInputStream(f);
+        } catch (FileNotFoundException e2) {
+            e2.printStackTrace();
+        }
+        byte[] content = null;
+        try {
+            content = new byte[is.available()];
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        try {
+            is.read(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return content;
+    }
+
+    public static void saveFile(byte[] bytes, String filename) throws IOException {
+        FileOutputStream fos = new FileOutputStream(filename);
+        fos.write(bytes);
+        fos.close();
     }
 
 }
