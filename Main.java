@@ -47,8 +47,6 @@ public class Main {
             System.out.println("Decrypt K2 with private key:\n" + new String(key256Bit) + "\n");
 
             // Question 3
-            // !!!!!!!!!!!!! IMPORTANT !!!!!!!!!!!!!!!!!!!!
-            // TODO: Change the message
             String message = "Information security, sometimes shortened to infosec, is the practice of protecting information by mitigating information risks. It is part of information risk management. It typically involves preventing or reducing the probability of unauthorized/inappropriate access to data, or the unlawful use, disclosure, disruption, deletion, corruption, modification, inspection, recording, or devaluation of information.";
 
             System.out.println("m: " + message);
@@ -115,7 +113,7 @@ public class Main {
             byte[] decryptedImageWith256BitKeyCTR = aes.decryptImageFileCTRMode(aes.get256BitKey(), iv,
                     encryptedImageWith256BitKeyCTR);
             saveFile(decryptedImageWith256BitKeyCTR, "./catDecryptedWith256BitKeyAESCTR.jpg");
-            System.out.println("Image decrypted with AES (256 bit key) CTR mode.");
+            System.out.println("Image decrypted with AES (256 bit key) CTR mode." + "\n");
 
             // AES (128 bit key) CBC mode Change Initialization Vector (IV) and show that
             // the corresponding ciphertext chages for the same plaintext
