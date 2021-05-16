@@ -47,7 +47,12 @@ public class Main {
             System.out.println("Decrypt K2 with private key:\n" + new String(key256Bit) + "\n");
 
             // Question 3
-            String message = "Information security, sometimes shortened to infosec, is the practice of protecting information by mitigating information risks. It is part of information risk management. It typically involves preventing or reducing the probability of unauthorized/inappropriate access to data, or the unlawful use, disclosure, disruption, deletion, corruption, modification, inspection, recording, or devaluation of information.";
+            String message = "Information security, sometimes shortened to infosec,"
+                    + "is the practice of protecting information by mitigating information "
+                    + "risks. It is part of information risk management. It typically involves"
+                    + " preventing or reducing the probability of unauthorized/inappropriate access to data,"
+                    + " or the unlawful use, disclosure, disruption, deletion, corruption, modification, inspection,"
+                    + " recording, or devaluation of information.";
 
             System.out.println("m: " + message);
 
@@ -78,12 +83,19 @@ public class Main {
             // Question 4
             byte[] content = getFile();
             IvParameterSpec iv = aes.generateIV(16);
+            long startTime;
+            long endTime;
+            long totalTime;
 
             // AES (128 bit key) CBC mode
             // Encrypt the image file.
+            startTime = System.nanoTime();
             byte[] encryptedImageWith128BitKeyCBC = aes.encryptImageFileCBCMode(aes.get128BitKey(), iv, content);
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
             saveFile(encryptedImageWith128BitKeyCBC, "encryptedWith128BitKeyAESCBC.txt");
-            System.out.println("Image encrypted with AES (128 bit key) CBC mode.");
+            System.out.println(
+                    "Image encrypted with AES (128 bit key) CBC mode. Total time = " + totalTime + " nanosecond");
 
             // Decrypt the file
             byte[] decryptedImageWith128BitKeyCBC = aes.decryptImageFileCBCMode(aes.get128BitKey(), iv,
@@ -93,9 +105,13 @@ public class Main {
 
             // AES (256 bit key) CBC mode
             // Encrypt the image file.
+            startTime = System.nanoTime();
             byte[] encryptedImageWith256BitKeyCBC = aes.encryptImageFileCBCMode(aes.get256BitKey(), iv, content);
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
             saveFile(encryptedImageWith256BitKeyCBC, "encryptedWith256BitKeyAESCBC.txt");
-            System.out.println("Image encrypted with AES (256 bit key) CBC mode.");
+            System.out.println(
+                    "Image encrypted with AES (256 bit key) CBC mode. Total time = " + totalTime + " nanosecond");
 
             // Decrypt the file
             byte[] decryptedImageWith256BitKeyCBC = aes.decryptImageFileCBCMode(aes.get256BitKey(), iv,
@@ -105,9 +121,13 @@ public class Main {
 
             // AES (256 bit key) CTR mode
             // Encrypt the image file.
+            startTime = System.nanoTime();
             byte[] encryptedImageWith256BitKeyCTR = aes.encryptImageFileCTRMode(aes.get256BitKey(), iv, content);
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
             saveFile(encryptedImageWith256BitKeyCTR, "encryptedWith256BitKeyAESCTR.txt");
-            System.out.println("Image encrypted with AES (256 bit key) CTR mode.");
+            System.out.println(
+                    "Image encrypted with AES (256 bit key) CTR mode. Total time = " + totalTime + " nanosecond");
 
             // Decrypt the file
             byte[] decryptedImageWith256BitKeyCTR = aes.decryptImageFileCTRMode(aes.get256BitKey(), iv,
